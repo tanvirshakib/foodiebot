@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reservation Success</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'your_css_file.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                Reservation Successful!
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Your table has been successfully reserved. We look forward to serving you!</h5>
+                <h5 class="card-title">Take a screen shot as a proof!</h5>
+                <p class="card-text"><strong>Name:</strong> {{ reservation.user.username }}</p>
+                <p class="card-text"><strong>Number of People:</strong> {{ reservation.num_of_people }}</p>
+                <p class="card-text"><strong>Time:</strong> {{ reservation.time }}</p>
+                <p class="card-text"><strong>Special Requests:</strong> {{ reservation.special_requests }}</p>
+                <a href="{% url 'home' %}" class="btn btn-primary">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

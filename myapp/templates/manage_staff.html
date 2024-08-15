@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Staff</title>
+</head>
+<body>
+    <h2>Manage Manager/Staff</h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Create</button>
+    </form>
+    <!-- Add logic to list existing staff and manage them -->
+</body>
+</html>

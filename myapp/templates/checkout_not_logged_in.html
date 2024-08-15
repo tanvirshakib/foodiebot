@@ -1,0 +1,18 @@
+<!-- templates/checkout_not_logged_in.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Required</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'myapp/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Please Login</h2>
+        <p>You need to be logged in to proceed with the checkout.</p>
+        <a href="{% url 'login' %}" class="button">Login</a>
+    </div>
+</body>
+</html>

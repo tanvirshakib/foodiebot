@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Post a Review</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        form div {
+            margin-bottom: 10px;
+        }
+        label {
+            display: inline-block;
+            width: 75px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Post a Review</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="id_rating">Rating:</label>
+            {{ form.rating }}
+        </div>
+        <div>
+            <label for="id_review_text">Review:</label>
+            {{ form.review_text }}
+        </div>
+        <button type="submit">Submit Review</button>
+    </form>
+</body>
+</html>

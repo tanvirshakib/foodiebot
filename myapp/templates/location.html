@@ -1,0 +1,19 @@
+<!-- myapp/templates/location.html -->
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Our Location</h2>
+    <div class="map-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; height: auto;">
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3150.004643996939!2d-121.9304197!3d37.4850097!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fc7a85b65e063%3A0x49e86fc067913e6f!2sSan%20Francisco%20Bay%20University!5e0!3m2!1sen!2sus!4v1624901886902!5m2!1sen!2sus" 
+            width="600" 
+            height="450" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+    </div>
+</div>
+{% endblock %}

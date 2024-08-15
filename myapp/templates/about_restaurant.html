@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Our Restaurant</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'myapp/style.css' %}">
+    <style>
+        .container {
+            max-width: 900px;
+            margin: auto;
+            text-align: center;
+            padding: 20px;
+        }
+        .logo img {
+            max-width: 200px;
+            margin: 20px 0;
+        }
+        .address {
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+        .story {
+            margin: 40px 0;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .gallery {
+            margin: 40px 0;
+        }
+        .gallery h2 {
+            margin-bottom: 20px;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .gallery-grid img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .testimonials {
+            margin: 40px 0;
+        }
+        .testimonials h2 {
+            margin-bottom: 20px;
+        }
+        .testimonial-item {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .testimonial-item p {
+            font-style: italic;
+        }
+        .testimonial-item span {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="{% static 'myapp/logo.jpg' %}" alt="Restaurant Logo">
+        </div>
+        <div class="address">
+            <p>161 Mission Falls Ln, Fremont, CA 94539</p>
+        </div>
+        <div class="story">
+            <p>Welcome to our restaurant! Our journey started in 2001 with the vision of creating a place where people can enjoy delicious food in a warm and inviting atmosphere. Our chefs use only the freshest ingredients to craft dishes that not only satisfy your hunger but also delight your taste buds. Join us for an unforgettable dining experience.</p>
+        </div>
+        <div class="gallery">
+            <h2>Gallery</h2>
+            <div class="gallery-grid">
+                <img src="{% static 'myapp/gallery1.jpg' %}" alt="Gallery Photo 1">
+                <img src="{% static 'myapp/gallery1.jpg' %}" alt="Gallery Photo 2">
+                <img src="{% static 'myapp/gallery1.jpg' %}" alt="Gallery Photo 3">
+                <img src="{% static 'myapp/gallery1.jpg' %}" alt="Gallery Photo 4">
+                <img src="{% static 'myapp/gallery1.jpg' %}" alt="Gallery Photo 5">
+                <img src="{% static 'myapp/gallery1.jpg' %}" alt="Gallery Photo 6">
+                <img src="{% static 'myapp/gallery1.jpg' %}" alt="Gallery Photo 7">
+                <img src="{% static 'myapp/gallery1.jpg' %}" alt="Gallery Photo 8">
+                <img src="{% static 'myapp/gallery1.jpg' %}" alt="Gallery Photo 9">
+                <img src="{% static 'myapp/gallery1.jpg' %}" alt="Gallery Photo 10">
+                <img src="{% static 'myapp/gallery1.jpg' %}" alt="Gallery Photo 11">
+                <img src="{% static 'myapp/gallery1.jpg' %}" alt="Gallery Photo 12">
+            </div>
+        </div>
+        <div class="testimonials">
+            <h2>Customer Testimonials</h2>
+            <div class="testimonial-item">
+                <p>"The food here is amazing! I've never had such a wonderful dining experience."</p>
+                <span>- Shakib</span>
+            </div>
+            <div class="testimonial-item">
+                <p>"A fantastic place with delicious food and great service. Highly recommend!"</p>
+                <span>- Tanvir</span>
+            </div>
+        </div>
+        <div class="hours">
+            <h2>Operating Hours</h2>
+            <p>Monday - Friday: 11:00 AM - 10:00 PM</p>
+            <p>Saturday - Sunday: 12:00 PM - 11:00 PM</p>
+        </div>
+        <div class="contact">
+            <h2>Contact Us</h2>
+            <p>Phone: (669) 260-4639</p>
+            <p>Email:foodiebot@ourrestaurant.com</p>
+        </div>
+        <div class="map">
+            <h2>Find Us Here</h2>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3150.004643996939!2d-121.9304197!3d37.4850097!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fc7a85b65e063%3A0x49e86fc067913e6f!2sSan%20Francisco%20Bay%20University!5e0!3m2!1sen!2sus!4v1624901886902!5m2!1sen!2sus"  width="600" height="450" style="border:0" allowfullscreen></iframe>
+        </div>
+    </div>
+</body>
+</html>

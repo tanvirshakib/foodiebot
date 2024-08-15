@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Orders</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'myapp/style.css' %}">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .order {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+        .order h2 {
+            margin: 0 0 10px;
+        }
+        .order p, .order ul {
+            margin: 5px 0;
+        }
+        .order ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .order ul li {
+            margin: 5px 0;
+        }
+        .order-buttons {
+            margin-top: 10px;
+        }
+        .order-buttons button {
+            margin-right: 5px;
+        }
+        .category-nav {
+            margin-bottom: 20px;
+        }
+        .category-nav button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Orders</h1>
+        <div class="category-nav">
+            <button onclick="location.href='?status=all'" class="{% if status_filter == 'all' %}active{% endif %}">All Orders</button>
+            <button onclick="location.href='?status=active'" class="{% if status_filter == 'active' %}active{% endif %}">Active Orders</button>
+        </div>
+        {% for order in all_orders %}
+            <div class="order">
+                <h2>Order #{{ order.id }}</h2>
+                <p><strong>Order Date:</strong> {{ order.order_date }}</p>
+                <p><strong>User:</strong> {{ order.user.username }}</p>
+                <p><strong>Delivery Preference:</strong> {{ order.delivery_preference }}</p>
+                {% if order.delivery_preference == 'delivery' %}
+                    <p><strong>Delivery Address:</strong> {{ order.street }}, {{ order.apt_number }}, {{ order.city }}, {{ order.state }} - {{ order.zip_code }}</p>
+                {% endif %}
+                <p><strong>Delivery Time:</strong> {{ order.delivery_time }}</p>
+                <p><strong>Card Number:</strong> {{ order.card_number }}</p>
+                <p><strong>Subtotal:</strong> ${{ order.subtotal }}</p>
+                <p><strong>Sales Tax:</strong> ${{ order.sales_tax }}</p>
+                <p><strong>Grand Total:</strong> ${{ order.grand_total }}</p>
+                <h3>Items:</h3>
+                <ul>
+                    {% for item in order.items.all %}
+                        <li>{{ item.name }} - ${{ item.price }} x {{ item.quantity }} = ${{ item.total }}</li>
+                    {% endfor %}
+                </ul>
+                <div class="order-buttons">
+                    {% if order.status == 'new' %}
+                        <button onclick="location.href='{% url 'update_order_status' order.id 'accepted' %}'">Accept</button>
+                        <button onclick="location.href='{% url 'update_order_status' order.id 'rejected' %}'">Reject</button>
+                    {% elif order.status == 'accepted' %}
+                        <button onclick="location.href='{% url 'update_order_status' order.id 'ready' %}'">Ready</button>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <p>There are no orders yet.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

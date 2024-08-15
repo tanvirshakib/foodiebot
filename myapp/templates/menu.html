@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'myapp/menu_style.css' %}">
+    <style>
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+        }
+        .quantity-selector button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .quantity-selector input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            margin: 0 5px;
+        }
+    </style>
+    <script>
+        function loadSelectedItems() {
+            let selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
+            selectedItems.forEach(item => {
+                let checkbox = document.querySelector(`input[name="items"][value="${item.name}|${item.price}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+                let quantityInput = document.querySelector(`input[name="quantity-${item.name}"]`);
+                if (quantityInput) {
+                    quantityInput.value = item.quantity;
+                }
+            });
+        }
+
+        function saveSelectedItems() {
+            let selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
+            document.querySelectorAll('input[name="items"]:checked').forEach(checkbox => {
+                let [name, price] = checkbox.value.split('|');
+                let quantity = document.querySelector(`input[name="quantity-${name}"]`).value;
+                let itemExists = selectedItems.find(item => item.name === name && item.price === parseFloat(price));
+                if (!itemExists) {
+                    selectedItems.push({ name: name, price: parseFloat(price), quantity: parseInt(quantity) });
+                } else {
+                    itemExists.quantity = parseInt(quantity);
+                }
+            });
+
+            document.querySelectorAll('input[name="items"]:not(:checked)').forEach(checkbox => {
+                let [name, price] = checkbox.value.split('|');
+                selectedItems = selectedItems.filter(item => !(item.name === name && item.price === parseFloat(price)));
+            });
+
+            localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
+        }
+
+        function incrementQuantity(name) {
+            let quantityInput = document.querySelector(`input[name="quantity-${name}"]`);
+            quantityInput.value = parseInt(quantityInput.value) + 1;
+            saveSelectedItems();
+        }
+
+        function decrementQuantity(name) {
+            let quantityInput = document.querySelector(`input[name="quantity-${name}"]`);
+            if (quantityInput.value > 1) {
+                quantityInput.value = parseInt(quantityInput.value) - 1;
+                saveSelectedItems();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadSelectedItems);
+
+        function submitForm() {
+            saveSelectedItems();
+            let selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
+            fetch("{% url 'cart' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'  // Add CSRF token for security
+                },
+                body: JSON.stringify({selected_items: selectedItems})
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = '{% url "cart" %}';
+                } else {
+                    console.error('Error:', response.statusText);
+                }
+            }).catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <nav>
+        <button onclick="location.href='{% url 'home' %}'">Home</button>
+    </nav>
+    <div class="category-nav">
+        {% for category in categories %}
+        <button onclick="location.href='{% url 'menu_category' category.name %}'" class="{% if category.name == current_category %}active{% endif %}">{{ category.name }}</button>
+        {% endfor %}
+    </div>
+    <h1>{{ current_category }}</h1>
+    <form id="menu-form">
+        <div class="menu-container">
+            {% for item in items %}
+            <div class="menu-item">
+                <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                <div class="item-details">
+                    <h2>{{ item.name }} <span>({{ item.size }})</span></h2>
+                    <div class="tags">
+                        {% if item.special %}
+                        <span class="tag">{{ item.special }}</span>
+                        {% endif %}
+                    </div>
+                    <p class="price">${{ item.price }}</p>
+                    <label>
+                        <input type="checkbox" name="items" value="{{ item.name }}|{{ item.price }}" onclick="saveSelectedItems()"> Select
+                    </label>
+                    <div class="quantity-selector">
+                        <button type="button" onclick="decrementQuantity('{{ item.name }}')">-</button>
+                        <input type="number" name="quantity-{{ item.name }}" value="1" min="1" readonly>
+                        <button type="button" onclick="incrementQuantity('{{ item.name }}')">+</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="order-section">
+            <button type="button" class="order-button" onclick="submitForm()">Place Order</button>
+        </div>
+    </form>
+</body>
+</html>

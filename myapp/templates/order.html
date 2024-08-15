@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Orders</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'myapp/style.css' %}">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .order {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+        .order h2 {
+            margin: 0 0 10px;
+        }
+        .order p, .order ul {
+            margin: 5px 0;
+        }
+        .order ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .order ul li {
+            margin: 5px 0;
+        }
+        .messages {
+            margin-bottom: 20px;
+        }
+        .messages .message {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .messages .message.success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .messages .message.error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Orders</h1>
+        <div class="messages">
+            {% if user_message %}
+                <div class="message error">
+                    {{ user_message }}
+                </div>
+            {% endif %}
+        </div>
+        {% for order in user_orders %}
+            <div class="order">
+                <h2>Order #{{ order.id }}</h2>
+                <p><strong>Order Date:</strong> {{ order.order_date }}</p>
+                <p><strong>Delivery Preference:</strong> {{ order.delivery_preference }}</p>
+                {% if order.delivery_preference == 'delivery' %}
+                    <p><strong>Delivery Address:</strong> {{ order.street }}, {{ order.apt_number }}, {{ order.city }}, {{ order.state }} - {{ order.zip_code }}</p>
+                {% endif %}
+                <p><strong>Delivery Time:</strong> {{ order.delivery_time }}</p>
+                <p><strong>Subtotal:</strong> ${{ order.subtotal }}</p>
+                <p><strong>Sales Tax:</strong> ${{ order.sales_tax }}</p>
+                <p><strong>Grand Total:</strong> ${{ order.grand_total }}</p>
+                <h3>Items:</h3>
+                <ul>
+                    {% for item in order.items.all %}
+                        <li>{{ item.name }} - ${{ item.price }} x {{ item.quantity }} = ${{ item.total }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% empty %}
+            <p>No orders found.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

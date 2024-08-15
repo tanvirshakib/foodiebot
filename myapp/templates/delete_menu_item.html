@@ -1,0 +1,14 @@
+<!-- myapp/templates/delete_menu_item.html -->
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Delete Menu Item</h2>
+    <p>Are you sure you want to delete "{{ item.name }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="{% url 'manage_menu' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'myapp/login_signup_style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <img src="{% static 'myapp/food.jpg' %}" alt="Sign Up Image">
+        </div>
+        <div class="right">
+            <h2>Create an Account</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Sign Up</button>
+            </form>
+            <p>Already have an account? <a href="{% url 'login' %}">Sign In</a></p>
+        </div>
+    </div>
+</body>
+</html>

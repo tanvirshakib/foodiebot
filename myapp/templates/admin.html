@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    {% load static %}
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .admin-container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .admin-container h2 {
+            margin-bottom: 1.5rem;
+        }
+        .admin-table td {
+            padding: 0.75rem;
+        }
+        .admin-button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h2 class="text-center">Welcome to the Admin Page</h2>
+        <table class="table admin-table">
+            <tbody>
+                <tr>
+                    <td><a href="{% url 'manage_users' %}" class="btn btn-primary btn-block admin-button">Manage Users</a></td>
+                </tr>
+                <tr>
+                    <td><a href="{% url 'manage_staff' %}" class="btn btn-primary btn-block admin-button">Manage Manager/Staff</a></td>
+                </tr>
+                <tr>
+                    <td><a href="{% url 'manage_reservations' %}" class="btn btn-primary btn-block admin-button">Manage Reservations</a></td>
+                </tr>
+                <tr>
+                    <td><a href="{% url 'manage_orders' %}" class="btn btn-primary btn-block admin-button">Manage Orders</a></td>
+                </tr>
+                <tr>
+                    <td><a href="{% url 'manage_menu' %}" class="btn btn-primary btn-block admin-button">Manage Menu</a></td>
+                </tr>
+                <tr>
+                    <td><a href="{% url 'manage_popular_menu' %}" class="btn btn-primary btn-block admin-button">Manage Popular Menu</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

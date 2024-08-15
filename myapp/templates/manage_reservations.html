@@ -1,0 +1,28 @@
+<!-- myapp/templates/manage_reservations.html -->
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Manage Reservations</h2>
+    <div class="row">
+        {% for reservation in reservations %}
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ reservation.user.username }}</h5>
+                    <p class="card-text"><strong>Date:</strong> {{ reservation.date }}</p>
+                    <p class="card-text"><strong>Time:</strong> {{ reservation.time }}</p>
+                    <p class="card-text"><strong>Number of People:</strong> {{ reservation.num_of_people }}</p>
+                    <p class="card-text"><strong>Special Requests:</strong> {{ reservation.special_requests }}</p>
+                    <a href="{% url 'edit_reservation' reservation.id %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'delete_reservation' reservation.id %}" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div>
+        <a href="{% url 'custom_admin' %}" class="btn btn-primary">Back to Home</a>
+    </div>
+</div>
+{% endblock %}

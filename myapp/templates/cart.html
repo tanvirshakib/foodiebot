@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'myapp/order_style.css' %}">
+    <script>
+        function loadOrder() {
+            let selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
+            const orderList = document.getElementById('order-list');
+            orderList.innerHTML = '';
+            selectedItems.forEach(item => {
+                if (!item.quantity) {
+                    item.quantity = 1;
+                }
+                addItemToOrder(item, orderList);
+            });
+            updateSubtotal();
+        }
+
+        function addItemToOrder(item, orderList) {
+            const listItem = document.createElement('tr');
+
+            const itemName = document.createElement('td');
+            itemName.className = "item-name";
+            itemName.textContent = item.name;
+
+            const itemPrice = document.createElement('td');
+            itemPrice.className = "item-price";
+            itemPrice.textContent = `$${parseFloat(item.price).toFixed(2)}`;
+
+            const itemQuantity = document.createElement('td');
+            itemQuantity.className = "item-quantity";
+            const quantityControls = document.createElement('div');
+            quantityControls.className = "quantity-controls";
+            const minusButton = document.createElement('button');
+            minusButton.textContent = "-";
+            minusButton.onclick = () => decreaseQuantity(item.name);
+            const quantitySpan = document.createElement('span');
+            quantitySpan.textContent = item.quantity;
+            const plusButton = document.createElement('button');
+            plusButton.textContent = "+";
+            plusButton.onclick = () => increaseQuantity(item.name);
+            quantityControls.appendChild(minusButton);
+            quantityControls.appendChild(quantitySpan);
+            quantityControls.appendChild(plusButton);
+            itemQuantity.appendChild(quantityControls);
+
+            const itemTotal = document.createElement('td');
+            itemTotal.className = "item-total";
+            itemTotal.textContent = `$${(parseFloat(item.price) * parseInt(item.quantity)).toFixed(2)}`;
+
+            const itemActions = document.createElement('td');
+            const removeButton = document.createElement('button');
+            removeButton.textContent = "X";
+            removeButton.className = "remove-button";
+            removeButton.onclick = () => removeItem(item.name);
+            itemActions.appendChild(removeButton);
+
+            listItem.appendChild(itemName);
+            listItem.appendChild(itemPrice);
+            listItem.appendChild(itemQuantity);
+            listItem.appendChild(itemTotal);
+            listItem.appendChild(itemActions);
+
+            orderList.appendChild(listItem);
+        }
+
+        function updateSubtotal() {
+            let selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
+            let subtotal = selectedItems.reduce((acc, item) => acc + (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0), 0);
+            let salesTax = subtotal * 0.1025;
+            let grandTotal = subtotal + salesTax;
+            document.getElementById('subtotal').innerText = `$${subtotal.toFixed(2)}`;
+            document.getElementById('sales-tax').innerText = `$${salesTax.toFixed(2)}`;
+            document.getElementById('grand-total').innerText = `$${grandTotal.toFixed(2)}`;
+        }
+
+        function increaseQuantity(name) {
+            let selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
+            let item = selectedItems.find(item => item.name === name);
+            if (item) {
+                item.quantity += 1;
+                localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
+                loadOrder();
+            }
+        }
+
+        function decreaseQuantity(name) {
+            let selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
+            let item = selectedItems.find(item => item.name === name);
+            if (item && item.quantity > 1) {
+                item.quantity -= 1;
+                localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
+                loadOrder();
+            }
+        }
+
+        function removeItem(name) {
+            let selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
+            selectedItems = selectedItems.filter(item => item.name !== name);
+            localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
+            loadOrder();
+        }
+
+        function submitOrder() {
+            let selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
+            let form = document.getElementById('order-form');
+            let hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = 'selected_items';
+            hiddenField.value = JSON.stringify(selectedItems);
+            form.appendChild(hiddenField);
+            form.submit();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadOrder();
+        });
+    </script>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+}
+nav {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+nav button {
+    margin-left: 10px;
+}
+.cart-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+th {
+    background-color: #f4f4f4;
+}
+.item-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+.item-name {
+    vertical-align: middle;
+}
+.item-price, .item-quantity, .item-total {
+    text-align: center;
+}
+.quantity-controls {
+    display: inline-flex;
+    align-items: center;
+}
+.quantity-controls button {
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    padding: 0;
+    margin: 0 5px;
+}
+.remove-button {
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+.subtotal {
+    text-align: right;
+    font-size: 1.2em;
+}
+.order-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: orange;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+    </style>
+</head>
+<body>
+    <nav>
+        <button onclick="location.href='{% url 'home' %}'">Home</button>
+        <button onclick="location.href='{% url 'menu' %}'">Menu</button>
+    </nav>
+    <div class="cart-container">
+        <h1>Your Cart</h1>
+        <form id="order-form" method="post" action="{% url 'cart' %}">
+            {% csrf_token %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="order-list">
+                    <!-- Items will be dynamically added here -->
+                </tbody>
+            </table>
+            <p class="subtotal">Subtotal: <span id="subtotal">$0.00</span></p>
+            <p class="subtotal">Sales Tax (10.25%): <span id="sales-tax">$0.00</span></p>
+            <p class="subtotal">Grand Total: <span id="grand-total">$0.00</span></p>
+            <button type="button" class="order-button" onclick="location.href='{% url 'checkout' %}'">Proceed to Checkout</button>
+        </form>
+    </div>
+</body>
+</html>

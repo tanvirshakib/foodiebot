@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reviews</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .card h3 {
+            margin: 0;
+            font-size: 1.2em;
+            color: #007BFF;
+        }
+        .card p {
+            margin: 10px 0;
+            font-size: 1em;
+            color: #555;
+        }
+        .card small {
+            display: block;
+            color: #999;
+            font-size: 0.8em;
+        }
+        .average-rating {
+            text-align: center;
+            font-size: 1.5em;
+            color: #007BFF;
+            margin-bottom: 20px;
+        }
+        .post-review {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .post-review:hover {
+            text-decoration: underline;
+        }
+        .login-prompt {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #007BFF;
+        }
+        .login-prompt a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .login-prompt a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="average-rating">Average Rating: {{ average_rating|floatformat:1 }}</div>
+
+        <h2>All Reviews</h2>
+        {% if reviews %}
+        {% for review in reviews %}
+        <div class="card">
+            <h3>{{ review.user.username }}</h3>
+            <p>{{ review.rating }}/5</p>
+            <p>{{ review.review_text }}</p>
+            <small>{{ review.created_at }}</small>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>No reviews yet.</p>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'post_review' %}" class="post-review">Post a Review</a>
+        {% else %}
+        <p class="login-prompt"><a href="{% url 'login' %}">Log in</a> to post a review.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

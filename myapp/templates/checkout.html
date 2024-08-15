@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'myapp/checkout_style.css' %}">
+    <script>
+        function loadCheckout() {
+            let selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
+            const orderList = document.getElementById('order-list');
+            orderList.innerHTML = '';
+            selectedItems.forEach(item => {
+                if (!item.quantity) {
+                    item.quantity = 1;
+                }
+                addItemToOrder(item, orderList);
+            });
+            updateTotals();
+        }
+
+        function addItemToOrder(item, orderList) {
+            const listItem = document.createElement('tr');
+
+            const itemName = document.createElement('td');
+            itemName.className = "item-name";
+            itemName.textContent = item.name;
+
+            const itemPrice = document.createElement('td');
+            itemPrice.className = "item-price";
+            itemPrice.textContent = `$${parseFloat(item.price).toFixed(2)}`;
+
+            const itemQuantity = document.createElement('td');
+            itemQuantity.className = "item-quantity";
+            const quantityControls = document.createElement('div');
+            quantityControls.className = "quantity-controls";
+            const minusButton = document.createElement('button');
+            minusButton.textContent = "-";
+            minusButton.onclick = () => decreaseQuantity(item.name);
+            const quantitySpan = document.createElement('span');
+            quantitySpan.textContent = item.quantity;
+            const plusButton = document.createElement('button');
+            plusButton.textContent = "+";
+            plusButton.onclick = () => increaseQuantity(item.name);
+            quantityControls.appendChild(minusButton);
+            quantityControls.appendChild(quantitySpan);
+            quantityControls.appendChild(plusButton);
+            itemQuantity.appendChild(quantityControls);
+
+            const itemTotal = document.createElement('td');
+            itemTotal.className = "item-total";
+            itemTotal.textContent = `$${(parseFloat(item.price) * parseInt(item.quantity)).toFixed(2)}`;
+
+            listItem.appendChild(itemName);
+            listItem.appendChild(itemPrice);
+            listItem.appendChild(itemQuantity);
+            listItem.appendChild(itemTotal);
+
+            orderList.appendChild(listItem);
+        }
+
+        function updateTotals() {
+            let selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
+            let subtotal = selectedItems.reduce((acc, item) => acc + (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0), 0);
+            let salesTax = subtotal * 0.1025;
+            let grandTotal = subtotal + salesTax;
+            document.getElementById('subtotal').innerText = `$${subtotal.toFixed(2)}`;
+            document.getElementById('sales-tax').innerText = `$${salesTax.toFixed(2)}`;
+            document.getElementById('grand-total').innerText = `$${grandTotal.toFixed(2)}`;
+        }
+
+        function increaseQuantity(name) {
+            let selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
+            let item = selectedItems.find(item => item.name === name);
+            if (item) {
+                item.quantity += 1;
+                localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
+                loadCheckout();
+            }
+        }
+
+        function decreaseQuantity(name) {
+            let selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
+            let item = selectedItems.find(item => item.name === name);
+            if (item && item.quantity > 1) {
+                item.quantity -= 1;
+                localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
+                loadCheckout();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCheckout();
+        });
+    </script>
+</head>
+<body>
+    <div class="checkout-container">
+        <h2>Checkout</h2>
+        
+        <h3>Order Details</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="order-list">
+                <!-- Order items will be dynamically added here -->
+            </tbody>
+        </table>
+        <p>Subtotal: <span id="subtotal">$0.00</span></p>
+        <p>Sales Tax (10.25%): <span id="sales-tax">$0.00</span></p>
+        <p>Grand Total: <span id="grand-total">$0.00</span></p>
+
+        <form method="post">
+            {% csrf_token %}
+            <h3>Delivery Preference</h3>
+            {{ form.delivery_preference }}
+            {% if form.delivery_preference.errors %}
+                <div class="error">{{ form.delivery_preference.errors }}</div>
+            {% endif %}
+            <div id="pickup-options" style="display: none;">
+            </div>
+            <div id="delivery-options" style="display: none;">
+                <div class="form-group">
+                    <label for="street">Street</label>
+                    {{ form.street }}
+                    {% if form.street.errors %}
+                        <div class="error">{{ form.street.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="apt_number">Apt Number (Optional)</label>
+                    {{ form.apt_number }}
+                    {% if form.apt_number.errors %}
+                        <div class="error">{{ form.apt_number.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    {{ form.city }}
+                    {% if form.city.errors %}
+                        <div class="error">{{ form.city.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="zip_code">Zip</label>
+                    {{ form.zip_code }}
+                    {% if form.zip_code.errors %}
+                        <div class="error">{{ form.zip_code.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="state">State</label>
+                    {{ form.state }}
+                    {% if form.state.errors %}
+                        <div class="error">{{ form.state.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            <h3>Payment Information</h3>
+            <div class="form-group">
+                <label for="card_number">Card Number</label>
+                {{ form.card_number }}
+                {% if form.card_number.errors %}
+                    <div class="error">{{ form.card_number.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="card_expiry">Expiry Date (MM/YY)</label>
+                {{ form.card_expiry }}
+                {% if form.card_expiry.errors %}
+                    <div class="error">{{ form.card_expiry.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="card_cvc">CVC</label>
+                {{ form.card_cvc }}
+                {% if form.card_cvc.errors %}
+                    <div class="error">{{ form.card_cvc.errors }}</div>
+                {% endif %}
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+        {% if form.non_field_errors %}
+            <div class="error">{{ form.non_field_errors }}</div>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deliveryPreferenceInputs = document.querySelectorAll('input[name="delivery_preference"]');
+            const pickupOptions = document.getElementById('pickup-options');
+            const deliveryOptions = document.getElementById('delivery-options');
+
+            function toggleOptions() {
+                const selectedPreference = document.querySelector('input[name="delivery_preference"]:checked').value;
+                if (selectedPreference === 'pickup') {
+                    pickupOptions.style.display = 'block';
+                    deliveryOptions.style.display = 'none';
+                } else if (selectedPreference === 'delivery') {
+                    pickupOptions.style.display = 'none';
+                    deliveryOptions.style.display = 'block';
+                }
+            }
+
+            deliveryPreferenceInputs.forEach(input => {
+                input.addEventListener('change', toggleOptions);
+            });
+
+            toggleOptions(); // Initial call to set the correct display
+        });
+    </script>
+</body>
+</html>
